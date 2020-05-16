@@ -1,26 +1,29 @@
 import React from "react";
-import logo from "./logo.svg";
-import "./App.css";
+import { MovieDb } from "moviedb-promise";
 
-function App(props) {
-  const { text } = props;
+class App extends React.Component {
+  constructor(props) {
+    super(props);
 
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>{text}</p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    this.state = {};
+    this.movieDb = new MovieDb("0f8d529ca28503395a1f7dc2532ad517");
+  }
+
+  componentDidMount() {
+    this.movieDb
+      .searchMovie({ query: "Alien" })
+      .then((res) => {
+        console.log(res);
+        this.setState({ data: res });
+      })
+      .catch(console.error);
+  }
+
+  render() {
+    const { data } = this.state;
+
+    return <div className="App">{JSON.stringify(data)}</div>;
+  }
 }
 
 export default App;
