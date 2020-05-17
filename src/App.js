@@ -1,29 +1,19 @@
 import React from "react";
 import { MovieDb } from "moviedb-promise";
-
+import Form from "./Form";
+function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {};
-    this.movieDb = new MovieDb("0f8d529ca28503395a1f7dc2532ad517");
+ 
+	doSomething = (movieinfo) => {
+	  console.log(movieinfo);
+	};
+	
+	  render() {
+		return (
+		  <div>
+		  <Form onSubmit={this.doSomething} />
+		  </div>
+	  );
+	}	
   }
-
-  componentDidMount() {
-    this.movieDb
-      .searchMovie({ query: "Alien" })
-      .then((res) => {
-        console.log(res);
-        this.setState({ data: res });
-      })
-      .catch(console.error);
-  }
-
-  render() {
-    const { data } = this.state;
-
-    return <div className="App">{JSON.stringify(data)}</div>;
-  }
-}
-
 export default App;
