@@ -2,7 +2,6 @@ import React from "react";
 import { MovieDb } from "moviedb-promise";
 import Form from "./Form";
 import MovieList from "./MovieList";
-import Movie from "./Movie";
 import './App.css';
 class App extends React.Component {
 	state = {

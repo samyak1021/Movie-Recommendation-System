@@ -51,7 +51,7 @@ form {
   width: 57px;
   color: red;
 }
-.movie_list {
+.movielist {
   border: thin solid blue;
   padding: 2rem;
   margin: 2rem;
@@ -59,7 +59,7 @@ form {
   flex-direction: column;
 }
  
-.movie_list_text {
+.movielisttext {
   position: relative;
   top: -47px;
   background: white;
