@@ -1,26 +1,40 @@
 import React from "react";
-import logo from "./logo.svg";
+import { MovieDb } from "moviedb-promise";
+import Form from "./Components/MovieForm/MovieForm";
+import MovieList from "./Components/MovieList/MovieList";
 import "./App.css";
 
-function App(props) {
-  const { text } = props;
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      movies: [],
+    };
 
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>{text}</p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    this.movieDb = new MovieDb("0f8d529ca28503395a1f7dc2532ad517");
+  }
+
+  addMovies = (movieName) => {
+    this.movieDb
+      .searchMovie({ query: movieName })
+      .then((res) => {
+        this.setState((prevState) => ({
+          movies: [...prevState.movies, ...res.results],
+        }));
+      })
+      .catch(console.error);
+  };
+
+  render() {
+    const { movies } = this.state;
+
+    return (
+      <div>
+        <Form onSubmit={this.addMovies} />
+        <MovieList movies={movies} />
+      </div>
+    );
+  }
 }
 
 export default App;
