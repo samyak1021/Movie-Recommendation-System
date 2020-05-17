@@ -43,11 +43,27 @@ form {
   display: flex;
 }
  
-.formtext {
+.form_text {
   position: relative;
   top: -48px;
   background: white;
   padding: 7px;
   width: 57px;
   color: red;
+}
+.movie_list {
+  border: thin solid blue;
+  padding: 2rem;
+  margin: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+ 
+.movie_list_text {
+  position: relative;
+  top: -47px;
+  background: white;
+  padding: 7px;
+  width: 106px;
+  color: blue;
 }

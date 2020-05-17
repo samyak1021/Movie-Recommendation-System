@@ -1,5 +1,5 @@
 import React from "react";
-import styles from './App.css';
+import './App.css';
 import axios from "axios";
 class Form extends React.Component {
     state = { movieName: '' };
@@ -14,7 +14,7 @@ class Form extends React.Component {
     render() {
       return (
         <form onSubmit={this.handleSubmit}>
-          <span className="formtext">&#x3C;Form /&#x3E;</span>
+          <span className="form_text">&#x3C;Form /&#x3E;</span>
             <input 
               type="text" 
               value={this.state.movieName}
@@ -27,6 +27,5 @@ class Form extends React.Component {
         );
       }
   }
-  
   
   export default Form;
