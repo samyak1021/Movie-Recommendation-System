@@ -1,6 +1,5 @@
 import React from "react";
-import { MovieDb } from "moviedb-promise";
-import Form from "./Components/MovieForm/MovieForm";
+import MovieForm from "./Components/MovieForm/MovieForm";
 import MovieList from "./Components/MovieList/MovieList";
 import "./App.css";
 
@@ -10,19 +9,13 @@ class App extends React.Component {
     this.state = {
       movies: [],
     };
-
-    this.movieDb = new MovieDb("0f8d529ca28503395a1f7dc2532ad517");
   }
 
-  addMovies = (movieName) => {
-    this.movieDb
-      .searchMovie({ query: movieName })
-      .then((res) => {
-        this.setState((prevState) => ({
-          movies: [...prevState.movies, ...res.results],
-        }));
-      })
-      .catch(console.error);
+  addMovie = (movie) => {
+    console.log(movie);
+    this.setState((prevState) => {
+      return { movies: [...prevState.movies, movie] };
+    });
   };
 
   render() {
@@ -30,7 +23,7 @@ class App extends React.Component {
 
     return (
       <div>
-        <Form onSubmit={this.addMovies} />
+        <MovieForm addMovie={this.addMovie} />
         <MovieList movies={movies} />
       </div>
     );
