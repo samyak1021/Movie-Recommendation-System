@@ -3,12 +3,16 @@ import "./MovieForm.css";
 import { AutoComplete } from "antd";
 import { MovieDb } from "moviedb-promise";
 
-const { Option } = AutoComplete;
+// const { Option } = AutoComplete;
+const Option = AutoComplete.Option
 
 const movieDb = new MovieDb("0f8d529ca28503395a1f7dc2532ad517");
 
 const MovieForm = (props) => {
   const [movies, setMovies] = useState([]);
+  // const arr = useState([]);
+  // const movies = arr[0];
+  // const setMovies = arr[1];
   const [selectedMovieName, setMovieName] = useState("");
   const { addMovie } = props;
 
