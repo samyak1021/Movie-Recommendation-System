@@ -1,6 +1,7 @@
 import React from "react";
 import MovieForm from "./Components/MovieForm/MovieForm";
 import MovieList from "./Components/MovieList/MovieList";
+import Navbar from "./Components/Navigation/Navbar";
 import "./App.css";
 
 class App extends React.Component {
@@ -8,6 +9,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       movies: [],
+      rating: {},
     };
   }
 
@@ -18,13 +20,28 @@ class App extends React.Component {
     });
   };
 
+  handleClick = (movieId) => {
+    const { rating } = this.state; //rating = {}
+    rating[movieId] = !rating[movieId];
+    this.setState({
+      rating: rating,
+    });
+  };
+
+  onSubmit = () => {
+    console.log(this.state.rating);
+    console.log(this.state.movies);
+  };
+
   render() {
-    const { movies } = this.state;
+    const { movies, rating } = this.state;
 
     return (
       <div>
+        <Navbar></Navbar>
         <MovieForm addMovie={this.addMovie} />
-        <MovieList movies={movies} />
+        <button onClick={this.onSubmit}>Submit!</button>
+        <MovieList movies={movies} onClick={this.handleClick} rating={rating} />
       </div>
     );
   }
