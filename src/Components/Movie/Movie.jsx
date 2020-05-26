@@ -1,9 +1,9 @@
 import React from "react";
 import "./Movie.css";
-import Opinion from "../Button/Button"
+import Opinion from "../Opinion/Opinion";
 
 function Movie(props) {
-  const { title, vote_average, overview, poster_path,rating,movieid } = props;
+  const { title, vote_average, overview, poster_path, rating, movieId } = props;
 
   return (
     <div className="movie">
@@ -13,12 +13,7 @@ function Movie(props) {
         <div>Rating: {vote_average}</div>
         <div>Description: {overview}</div>
         <div>
-          <Opinion
-            onClick={props.onClick}
-            rating={rating}
-            movieid = {movieid}
-          >
-          </Opinion>
+          <Opinion onClick={props.onClick} rating={rating} movieId={movieId} />
         </div>
       </div>
     </div>
