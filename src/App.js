@@ -11,6 +11,7 @@ class App extends React.Component {
     this.state = {
       movies: [],
       rating: {},
+      recommendations : []
     };
   }
 
@@ -32,29 +33,50 @@ class App extends React.Component {
   };
 
   onSubmit = () => {
-    console.log(this.state.rating);
-    console.log(this.state.movies);
-    discoverMovie("en-US", "popularity.desc", false, false, 1, 2020)
-    .then(function (response) {
-      console.log(response);
-    })
-    .catch(function (error) {
-      console.log(error);
-    })
-    .finally(function () {
-      console.log("Movies Fetched");
-    });  
+    const { movies, rating } = this.state;
+    var liked = [];
+    var disliked = [];
+
+    movies.forEach((movie) => {
+      if (rating[movie.id] === false || rating[movie.id] === undefined) {
+        disliked = disliked.concat(movie.genre_ids);
+      } else {
+        liked = liked.concat(movie.genre_ids);
+      }
+    });
+    const like = liked.join("|");
+    const dislike = disliked.join(",");
+    console.log(rating, movies, like, dislike);
+    discoverMovie(
+      like,
+      dislike,
+      "en-US",
+      "popularity.desc",
+      false,
+      false,
+      1,
+      2020
+    )
+      .then( (response) => {
+        this.setState({recommendations:response.data.results});
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        console.log("Movies Fetched");
+      });
   };
 
   render() {
-    const { movies, rating} = this.state;
-
+    const { movies, rating, recommendations} = this.state;
     return (
       <div>
         <Navbar></Navbar>
         <MovieForm addMovie={this.addMovie} />
         <button onClick={this.onSubmit}>Submit!</button>
-        <MovieList movies={movies} onClick={this.handleClick} rating={rating} />
+        <MovieList movies={movies} onClick={this.handleClick} rating={rating} showOpinion={true}/>
+        <MovieList movies={recommendations}  onClick={() => { }} showOpinion={false}/>
       </div>
     );
   }

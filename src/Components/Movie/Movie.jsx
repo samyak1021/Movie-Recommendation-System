@@ -3,7 +3,7 @@ import "./Movie.css";
 import Opinion from "../Opinion/Opinion";
 
 function Movie(props) {
-  const { title, vote_average, overview, poster_path, rating, movieId } = props;
+  const { title, vote_average, overview, poster_path, rating, movieId,showOpinion } = props;
 
   return (
     <div className="movie">
@@ -13,7 +13,7 @@ function Movie(props) {
         <div>Rating: {vote_average}</div>
         <div>Description: {overview}</div>
         <div>
-          <Opinion onClick={props.onClick} rating={rating} movieId={movieId} />
+          {showOpinion ? <Opinion onClick={props.onClick} rating={rating} movieId={movieId} /> : null}
         </div>
       </div>
     </div>

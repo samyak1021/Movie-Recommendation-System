@@ -5,12 +5,12 @@ const tmdbApi = axios.create({
 });
 const apiKey = "0f8d529ca28503395a1f7dc2532ad517";
 
-function discoverMovies( language, sortBy, includeAdult, includeVideo, page, year) {
+function discoverMovies( withGenres, withoutGenres,language, sortBy, includeAdult, includeVideo, page, year) {
     return (
         tmdbApi.get('/discover/movie', {
             params: {
-                // with_genres: withGenres,
-                // without_genres: withoutGenres,
+                with_genres: withGenres,
+                without_genres: withoutGenres,
                 api_key: apiKey,
                 language: language,
                 sort_by: sortBy,
