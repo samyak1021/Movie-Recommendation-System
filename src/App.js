@@ -36,8 +36,10 @@ class App extends React.Component {
     const { movies, rating } = this.state;
     var liked = [];
     var disliked = [];
+    var releaseDate = [];
 
     movies.forEach((movie) => {
+      releaseDate = releaseDate.concat(movie.release_date.slice(0).slice(0,4));
       if (rating[movie.id] === false || rating[movie.id] === undefined) {
         disliked = disliked.concat(movie.genre_ids);
       } else {
@@ -46,8 +48,15 @@ class App extends React.Component {
     });
     const like = liked.join("|");
     const dislike = disliked.join(",");
+    var releaseDateFrom = Math.min(...releaseDate);
+    releaseDateFrom = releaseDateFrom + "";
+    var releaseDateTo = Math.max(...releaseDate);
+    releaseDateTo = releaseDateTo + "";
+    console.log(releaseDateFrom, releaseDateTo);
     console.log(rating, movies, like, dislike);
     discoverMovie(
+      releaseDateFrom + '-01-01',
+      releaseDateTo + '-12-31',
       like,
       dislike,
       "en-US",

@@ -24,3 +24,11 @@
   - [ ] Try tensorflow.js to use models in browser.
 - [ ] Login/Signup
   - [ ] Firebase
+  
+  ### Algorithm Consideration
+  - [ ] Language
+  - [ ] Date of Release
+  - [ ] Cast
+  - [ ] Running time
+  - [ ] Keywords
+  - [ ] Rating
