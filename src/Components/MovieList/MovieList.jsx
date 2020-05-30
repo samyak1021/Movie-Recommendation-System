@@ -1,23 +1,31 @@
 import React from "react";
+import { Row, Col, Empty } from "antd";
 import Movie from "../Movie/Movie";
 import "./MovieList.css";
 
 function MovieList(props) {
-  const { movies, rating, onClick, showOpinion} = props;
+  const { movies, rating, onClick, showOpinion, emptyDescription } = props;
 
   return (
     <div className="movie-list">
-      <span className="movie-list-text">&#x3C;MovieList /&#x3E;</span>
-      {movies.map((movieInfo) => (
-        <Movie
-          key={movieInfo.id}
-          {...movieInfo}
-          movieId={movieInfo.id}
-          onClick={onClick}
-          rating={rating?rating[movieInfo.id]:null}
-          showOpinion = {showOpinion}
-        />
-      ))}
+      {movies.length ? (
+        <Row>
+          {movies.map((movieInfo) => (
+            <Col span={6}>
+              <Movie
+                key={movieInfo.id}
+                {...movieInfo}
+                movieId={movieInfo.id}
+                onClick={onClick}
+                rating={rating ? rating[movieInfo.id] : null}
+                showOpinion={showOpinion}
+              />
+            </Col>
+          ))}
+        </Row>
+      ) : (
+        <Empty description={emptyDescription} />
+      )}
     </div>
   );
 }

@@ -1,11 +1,14 @@
 import React from "react";
+import { Tabs } from "antd";
 import MovieForm from "./Components/MovieForm/MovieForm";
 import MovieList from "./Components/MovieList/MovieList";
 import Navbar from "./Components/Navigation/Navbar";
 import discoverMovie from "./Repository";
-import { Button} from 'antd';
-import { SearchOutlined} from '@ant-design/icons';
+import { Button } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 import "./App.css";
+
+const { TabPane } = Tabs;
 
 class App extends React.Component {
   constructor(props) {
@@ -13,7 +16,7 @@ class App extends React.Component {
     this.state = {
       movies: [],
       rating: {},
-      recommendations : []
+      recommendations: [],
     };
   }
 
@@ -66,14 +69,14 @@ class App extends React.Component {
       false,
       false,
       1,
-      releaseDateFrom + '-01-01',
+      releaseDateFrom + "-01-01",
       ratings,
       like,
       dislike,
       languages
     )
-      .then( (response) => {
-        this.setState({recommendations:response.data.results});
+      .then((response) => {
+        this.setState({ recommendations: response.data.results });
       })
       .catch((error) => {
         console.log(error);
@@ -84,16 +87,39 @@ class App extends React.Component {
   };
 
   render() {
-    const { movies, rating, recommendations} = this.state;
+    const { movies, rating, recommendations } = this.state;
     return (
-      <div>
-        <Navbar></Navbar>
+      <div className="app">
+        <Navbar />
         <MovieForm addMovie={this.addMovie} />
-        <Button type="primary" shape="round" icon={<SearchOutlined />} size= "default" onClick={this.onSubmit}>
+        <Button
+          type="primary"
+          shape="round"
+          icon={<SearchOutlined />}
+          size="default"
+          onClick={this.onSubmit}
+        >
           Submit!
         </Button>
-        <MovieList movies={movies} onClick={this.handleClick} rating={rating} showOpinion={true}/>
-        <MovieList movies={recommendations}  onClick={() => { }} showOpinion={false}/>
+        <Tabs defaultActiveKey="watched" className="movie-tabs">
+          <TabPane tab="Watched" key="watched">
+            <MovieList
+              movies={movies}
+              onClick={this.handleClick}
+              rating={rating}
+              showOpinion={true}
+              emptyDescription="No movies added!"
+            />
+          </TabPane>
+          <TabPane tab="Recommendations" key="recommendations">
+            <MovieList
+              movies={recommendations}
+              onClick={() => {}}
+              showOpinion={false}
+              emptyDescription="Submit your favorite movies to get recommendations!"
+            />
+          </TabPane>
+        </Tabs>
       </div>
     );
   }
