@@ -3,6 +3,8 @@ import MovieForm from "./Components/MovieForm/MovieForm";
 import MovieList from "./Components/MovieList/MovieList";
 import Navbar from "./Components/Navigation/Navbar";
 import discoverMovie from "./Repository";
+import { Button} from 'antd';
+import { SearchOutlined} from '@ant-design/icons';
 import "./App.css";
 
 class App extends React.Component {
@@ -87,7 +89,9 @@ class App extends React.Component {
       <div>
         <Navbar></Navbar>
         <MovieForm addMovie={this.addMovie} />
-        <button onClick={this.onSubmit}>Submit!</button>
+        <Button type="primary" shape="round" icon={<SearchOutlined />} size= "default" onClick={this.onSubmit}>
+          Submit!
+        </Button>
         <MovieList movies={movies} onClick={this.handleClick} rating={rating} showOpinion={true}/>
         <MovieList movies={recommendations}  onClick={() => { }} showOpinion={false}/>
       </div>
