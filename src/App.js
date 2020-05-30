@@ -37,9 +37,15 @@ class App extends React.Component {
     var liked = [];
     var disliked = [];
     var releaseDate = [];
+    var languageOfMovie = [];
+    var voteAverage = [];
+    var runTime = [];
 
     movies.forEach((movie) => {
-      releaseDate = releaseDate.concat(movie.release_date.slice(0).slice(0,4));
+      releaseDate = releaseDate.concat(movie.release_date.slice(0).slice(0, 4));
+      languageOfMovie = languageOfMovie.concat(movie.original_language);
+      voteAverage = voteAverage.concat(movie.vote_average);
+      runTime = runTime.concat(movie.with_runtime);
       if (rating[movie.id] === false || rating[movie.id] === undefined) {
         disliked = disliked.concat(movie.genre_ids);
       } else {
@@ -48,23 +54,21 @@ class App extends React.Component {
     });
     const like = liked.join("|");
     const dislike = disliked.join(",");
+    const languages = languageOfMovie.join("|");
+    const ratings = Math.min(...voteAverage);
     var releaseDateFrom = Math.min(...releaseDate);
     releaseDateFrom = releaseDateFrom + "";
-    var releaseDateTo = Math.max(...releaseDate);
-    releaseDateTo = releaseDateTo + "";
-    console.log(releaseDateFrom, releaseDateTo);
     console.log(rating, movies, like, dislike);
     discoverMovie(
-      releaseDateFrom + '-01-01',
-      releaseDateTo + '-12-31',
-      like,
-      dislike,
-      "en-US",
       "popularity.desc",
       false,
       false,
       1,
-      2020
+      releaseDateFrom + '-01-01',
+      ratings,
+      like,
+      dislike,
+      languages
     )
       .then( (response) => {
         this.setState({recommendations:response.data.results});
