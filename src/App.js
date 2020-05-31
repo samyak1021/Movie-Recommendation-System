@@ -1,10 +1,9 @@
 import React from "react";
-import { Tabs } from "antd";
+import { Tabs, Button, message} from "antd";
 import MovieForm from "./Components/MovieForm/MovieForm";
 import MovieList from "./Components/MovieList/MovieList";
 import Navbar from "./Components/Navigation/Navbar";
 import discoverMovie from "./Repository";
-import { Button } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import "./App.css";
 
@@ -26,7 +25,7 @@ class App extends React.Component {
       return {
         movies: [...prevState.movies, movie],
       };
-    });
+    },() =>{message.success("Your movie is added")});
   };
 
   handleClick = (movieId) => {
@@ -45,7 +44,6 @@ class App extends React.Component {
     var languageOfMovie = [];
     var voteAverage = [];
     var runTime = [];
-
     movies.forEach((movie) => {
       releaseDate = releaseDate.concat(movie.release_date.slice(0).slice(0, 4));
       languageOfMovie = languageOfMovie.concat(movie.original_language);
@@ -77,6 +75,7 @@ class App extends React.Component {
     )
       .then((response) => {
         this.setState({ recommendations: response.data.results });
+        message.success("You're recommendations are ready!")
       })
       .catch((error) => {
         console.log(error);
@@ -99,7 +98,7 @@ class App extends React.Component {
           size="default"
           onClick={this.onSubmit}
         >
-          Submit!
+            Recommend!
         </Button>
         <Tabs defaultActiveKey="watched" className="movie-tabs">
           <TabPane tab="Watched" key="watched">
