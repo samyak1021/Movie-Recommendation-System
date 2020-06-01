@@ -68,7 +68,7 @@ class MovieForm extends React.Component {
     const { selectedMovieName, movies } = this.state;
 
     return (
-      <AutoComplete
+      <AutoComplete 
         dropdownMatchSelectWidth={252}
         style={{
           width: 300,

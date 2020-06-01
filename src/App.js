@@ -1,5 +1,5 @@
 import React from "react";
-import { Tabs, Button, message} from "antd";
+import { Tabs, Button, message, Affix} from "antd";
 import MovieForm from "./Components/MovieForm/MovieForm";
 import MovieList from "./Components/MovieList/MovieList";
 import Navbar from "./Components/Navigation/Navbar";
@@ -16,6 +16,7 @@ class App extends React.Component {
       movies: [],
       rating: {},
       recommendations: [],
+      activeKey: "watched"
     };
   }
 
@@ -34,6 +35,10 @@ class App extends React.Component {
     this.setState({
       rating: rating,
     });
+  };
+
+  handleChange = (activeKey) => {
+    this.setState({ activeKey });
   };
 
   onSubmit = () => {
@@ -76,6 +81,7 @@ class App extends React.Component {
       .then((response) => {
         this.setState({ recommendations: response.data.results });
         message.success("You're recommendations are ready!")
+        this.setState({ activeKey: "recommendations" });
       })
       .catch((error) => {
         console.log(error);
@@ -90,17 +96,22 @@ class App extends React.Component {
     return (
       <div className="app">
         <Navbar />
-        <MovieForm addMovie={this.addMovie} />
-        <Button
-          type="primary"
-          shape="round"
-          icon={<SearchOutlined />}
-          size="default"
-          onClick={this.onSubmit}
-        >
-            Recommend!
-        </Button>
-        <Tabs defaultActiveKey="watched" className="movie-tabs">
+        <div className="search-box">
+          <MovieForm addMovie={this.addMovie} />
+          <Button className="recommend-button"
+              style={{ position: 'fixed', bottom: 50, right: 40}}
+              type="primary"
+              shape="round"
+              icon={<SearchOutlined />}
+              size="default"
+              onClick={this.onSubmit}
+            >
+                Recommend!
+            </Button>
+        </div>
+        <Tabs
+          onChange = {this.handleChange}
+          activeKey={this.state.activeKey} className="movie-tabs">
           <TabPane tab="Watched" key="watched">
             <MovieList
               movies={movies}

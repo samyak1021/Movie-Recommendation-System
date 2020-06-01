@@ -1,12 +1,25 @@
 .app {
   width: 90vw;
   margin: auto;
-  text-align: center;
 }
 
 .movie-tabs {
   text-align: center;
+  z-index: 0;
 }
+
+.search-box {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.recommend-button{
+  z-index: 1;
+}
+
+
+
+
 
 
 
