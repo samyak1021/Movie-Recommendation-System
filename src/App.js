@@ -1,5 +1,5 @@
 import React from "react";
-import { Tabs, Button, message, Affix} from "antd";
+import { Tabs, Button, message} from "antd";
 import MovieForm from "./Components/MovieForm/MovieForm";
 import MovieList from "./Components/MovieList/MovieList";
 import Navbar from "./Components/Navigation/Navbar";
@@ -98,16 +98,6 @@ class App extends React.Component {
         <Navbar />
         <div className="search-box">
           <MovieForm addMovie={this.addMovie} />
-          <Button className="recommend-button"
-              style={{ position: 'fixed', bottom: 50, right: 40}}
-              type="primary"
-              shape="round"
-              icon={<SearchOutlined />}
-              size="default"
-              onClick={this.onSubmit}
-            >
-                Recommend!
-            </Button>
         </div>
         <Tabs
           onChange = {this.handleChange}
@@ -120,6 +110,16 @@ class App extends React.Component {
               showOpinion={true}
               emptyDescription="No movies added!"
             />
+            <Button className="recommend-button"
+              style={{ position: 'fixed', bottom: 50, right: 40}}
+              type="primary"
+              shape="round"
+              icon={<SearchOutlined />}
+              size="default"
+              onClick={this.onSubmit}
+            >
+                Recommend Movies!
+            </Button>
           </TabPane>
           <TabPane tab="Recommendations" key="recommendations">
             <MovieList
@@ -128,6 +128,18 @@ class App extends React.Component {
               showOpinion={false}
               emptyDescription="Submit your favorite movies to get recommendations!"
             />
+            <Button className="recommend-button"
+              style={{ position: 'fixed', bottom: 50, right: 40}}
+              type="primary"
+              shape="round"
+              icon={<SearchOutlined />}
+              size="default"
+              onClick={() => {
+                  this.setState({ activeKey: "watched" });
+                }}
+            >
+                Add More Movies!
+            </Button>
           </TabPane>
         </Tabs>
       </div>
