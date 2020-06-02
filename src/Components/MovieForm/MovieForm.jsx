@@ -1,6 +1,6 @@
 import React from "react";
 import "./MovieForm.css";
-import { AutoComplete } from "antd";
+import { AutoComplete} from "antd";
 import { MovieDb } from "moviedb-promise";
 
 // const { Option } = AutoComplete;
@@ -11,7 +11,7 @@ function getReleaseYear(releaseDate) {
   let releaseYear = "";
 
   if (releaseDate === undefined) {
-    releaseYear = "";
+    releaseYear = ""
   }
   else {
     releaseYear = releaseDate.slice(0, 4);
@@ -68,7 +68,7 @@ class MovieForm extends React.Component {
     const { selectedMovieName, movies } = this.state;
 
     return (
-      <AutoComplete 
+      <AutoComplete
         dropdownMatchSelectWidth={252}
         style={{
           width: 300,
@@ -76,7 +76,8 @@ class MovieForm extends React.Component {
         onSelect={this.onSelect}
         onSearch={this.handleSearch}
         value={selectedMovieName}
-      >
+        placeholder="Search Movies..."
+        >
         {movies.map((movie) => (
           <Option key={movie.id} value={movie.id}>
             {`${movie.title} (${getReleaseYear(movie.release_date)})`}

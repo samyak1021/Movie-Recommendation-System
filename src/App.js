@@ -4,7 +4,7 @@ import MovieForm from "./Components/MovieForm/MovieForm";
 import MovieList from "./Components/MovieList/MovieList";
 import Navbar from "./Components/Navigation/Navbar";
 import discoverMovie from "./Repository";
-import { SearchOutlined } from "@ant-design/icons";
+import { SearchOutlined, VideoCameraAddOutlined  } from "@ant-design/icons";
 import "./App.css";
 
 const { TabPane } = Tabs;
@@ -43,12 +43,12 @@ class App extends React.Component {
 
   onSubmit = () => {
     const { movies, rating } = this.state;
-    var liked = [];
-    var disliked = [];
-    var releaseDate = [];
-    var languageOfMovie = [];
-    var voteAverage = [];
-    var runTime = [];
+    let liked = [];
+    let disliked = [];
+    let releaseDate = [];
+    let languageOfMovie = [];
+    let voteAverage = [];
+    let runTime = [];
     movies.forEach((movie) => {
       releaseDate = releaseDate.concat(movie.release_date.slice(0).slice(0, 4));
       languageOfMovie = languageOfMovie.concat(movie.original_language);
@@ -132,7 +132,7 @@ class App extends React.Component {
               style={{ position: 'fixed', bottom: 50, right: 40}}
               type="primary"
               shape="round"
-              icon={<SearchOutlined />}
+              icon={<VideoCameraAddOutlined />}
               size="default"
               onClick={() => {
                   this.setState({ activeKey: "watched" });

@@ -3,16 +3,16 @@
 ### Tasks
 
 - [ ] Improve Styling
-  - [ ] Search Bar
-  - [ ] Like/Dislike Button
-  - [ ] Movie List
+  - [x] Search Bar
+  - [x] Like/Dislike Button
+  - [x] Movie List
   - [ ] Navbar
   - [ ] About Us
   - [ ] Responsive css
   - [ ] Consider ant components
-- [ ] Add movie recommendation
-  - [ ] Adhoc Methods
-  - [ ] Tmdb API
+- [x] Add movie recommendation
+  - [x] Adhoc Methods
+  - [x] Tmdb API
   - [ ] Data for custom models(MovieLens)
   - [ ] Custom Models
     - [ ] Liner
@@ -26,9 +26,11 @@
   - [ ] Firebase
   
   ### Algorithm Consideration
-  - [ ] Language
-  - [ ] Date of Release
+  - [x] Language
+  - [x] Date of Release
   - [ ] Cast
   - [ ] Running time
   - [ ] Keywords
-  - [ ] Rating
+  - [x] Rating
+  - [x] Genres
+  - [ ] Description
