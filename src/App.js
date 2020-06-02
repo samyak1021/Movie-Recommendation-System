@@ -80,7 +80,7 @@ class App extends React.Component {
     )
       .then((response) => {
         this.setState({ recommendations: response.data.results });
-        message.success("You're recommendations are ready!")
+        message.success("Your recommendations are ready!")
         this.setState({ activeKey: "recommendations" });
       })
       .catch((error) => {
