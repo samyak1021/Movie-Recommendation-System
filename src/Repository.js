@@ -5,19 +5,20 @@ const tmdbApi = axios.create({
 });
 const apiKey = "0f8d529ca28503395a1f7dc2532ad517";
 
-function discoverMovies( withGenres, withoutGenres,language, sortBy, includeAdult, includeVideo, page, year) {
+function discoverMovies(sortBy, includeAdult, includeVideo, page,releaseDateFrom, voteAverageFrom, withGenres, withoutGenres, originalLanguage) {
     return (
         tmdbApi.get('/discover/movie', {
             params: {
-                with_genres: withGenres,
-                without_genres: withoutGenres,
-                api_key: apiKey,
-                language: language,
-                sort_by: sortBy,
-                include_adult: includeAdult,
-                include_video: includeVideo,
-                page: page,
-                year: year
+                "api_key": apiKey,
+                "sort_by": sortBy,
+                "include_adult": includeAdult,
+                "include_video": includeVideo,
+                "page": page,
+                "primary_release_date.gte": releaseDateFrom,
+                "vote_average.gte": voteAverageFrom,
+                "with_genres": withGenres,
+                "without_genres": withoutGenres,
+                "with_original_language": originalLanguage
             }
         })
     );
