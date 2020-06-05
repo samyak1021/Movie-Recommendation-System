@@ -3,6 +3,7 @@ import { Tabs, Button, message} from "antd";
 import MovieForm from "./Components/MovieForm/MovieForm";
 import MovieList from "./Components/MovieList/MovieList";
 import Navbar from "./Components/Navigation/Navbar";
+import getSimilarMovie from "./Components/SimilarMovies/SimilarMovies";
 import discoverMovie from "./Repository";
 import { SearchOutlined, VideoCameraAddOutlined  } from "@ant-design/icons";
 import "./App.css";
@@ -44,11 +45,14 @@ class App extends React.Component {
   onSubmit = () => {
     const { movies, rating } = this.state;
     let liked = [];
+    let likedId = [];
     let disliked = [];
+    let dislikedId = [];
     let releaseDate = [];
     let languageOfMovie = [];
     let voteAverage = [];
     let runTime = [];
+    let id = [];
     movies.forEach((movie) => {
       releaseDate = releaseDate.concat(movie.release_date.slice(0).slice(0, 4));
       languageOfMovie = languageOfMovie.concat(movie.original_language);
@@ -56,10 +60,16 @@ class App extends React.Component {
       runTime = runTime.concat(movie.with_runtime);
       if (rating[movie.id] === false || rating[movie.id] === undefined) {
         disliked = disliked.concat(movie.genre_ids);
+        dislikedId = dislikedId.concat(movie.id);
       } else {
         liked = liked.concat(movie.genre_ids);
+        likedId = likedId.concat(movie.id);
       }
     });
+    for (let i in likedId) {
+      id = getSimilarMovie(i);
+    }
+    console.log(id);
     const like = liked.join("|");
     const dislike = disliked.join(",");
     const languages = languageOfMovie.join("|");
@@ -76,7 +86,8 @@ class App extends React.Component {
       ratings,
       like,
       dislike,
-      languages
+      languages,
+      id
     )
       .then((response) => {
         this.setState({ recommendations: response.data.results });

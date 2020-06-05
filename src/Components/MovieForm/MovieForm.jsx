@@ -9,6 +9,7 @@ const Option = AutoComplete.Option;
 const movieDb = new MovieDb("0f8d529ca28503395a1f7dc2532ad517");
 function getReleaseYear(releaseDate) {
   let releaseYear = "";
+  
 
   if (releaseDate === undefined) {
     releaseYear = ""
@@ -16,6 +17,7 @@ function getReleaseYear(releaseDate) {
   else {
     releaseYear = releaseDate.slice(0, 4);
   }
+  
 
   return releaseYear;
 }
