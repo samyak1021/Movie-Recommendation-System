@@ -7,11 +7,12 @@ function getSimilarMovies(movieId) {
     for (let key in MovieIndex) {
         if (MovieIndex[key] === movieId) {
             index = key;
-            simMovies = Object.values(Similar[index]);
         }
         else {
-            simMovies =[]
+            simMovies = []
         }
+        simMovies = Object.values(Similar[index]);
+        break;
     }
     return simMovies;
 }

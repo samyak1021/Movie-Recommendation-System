@@ -3,7 +3,7 @@ import { Tabs, Button, message} from "antd";
 import MovieForm from "./Components/MovieForm/MovieForm";
 import MovieList from "./Components/MovieList/MovieList";
 import Navbar from "./Components/Navigation/Navbar";
-import getSimilarMovie from "./Components/SimilarMovies/SimilarMovies";
+import getSimilarMovies from "./Components/SimilarMovies/SimilarMovies";
 import discoverMovie from "./Repository";
 import { SearchOutlined, VideoCameraAddOutlined  } from "@ant-design/icons";
 import "./App.css";
@@ -66,9 +66,10 @@ class App extends React.Component {
         likedId = likedId.concat(movie.id);
       }
     });
-    for (let i in likedId) {
-      id = getSimilarMovie(i);
-    }
+    id = id.concat(likedId.forEach(getSimilarMovies));
+    // for (let i in likedId) {
+    //   id =  id.concat(getSimilarMovies(i));
+    // }
     console.log(id);
     const like = liked.join("|");
     const dislike = disliked.join(",");
