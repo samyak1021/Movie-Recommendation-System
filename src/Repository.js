@@ -14,30 +14,28 @@ function discoverMovies(
   voteAverageFrom,
   withGenres,
   withoutGenres,
-  originalLanguage,
-  movieId
+  originalLanguage
 ) {
-  return (
-    tmdbApi.get("/discover/movie", {
-      params: {
-        api_key: apiKey,
-        sort_by: sortBy,
-        include_adult: includeAdult,
-        include_video: includeVideo,
-        page: page,
-        "primary_release_date.gte": releaseDateFrom,
-        "vote_average.gte": voteAverageFrom,
-        with_genres: withGenres,
-        without_genres: withoutGenres,
-        with_original_language: originalLanguage,
-      },
-    }),
-    tmdbApi.get("/movie", {
-      params: {
-        movie_id: movieId,
-        api_key: apiKey,
-      },
-    })
-  );
+  return tmdbApi.get("/discover/movie", {
+    params: {
+      api_key: apiKey,
+      sort_by: sortBy,
+      include_adult: includeAdult,
+      include_video: includeVideo,
+      page: page,
+      "primary_release_date.gte": releaseDateFrom,
+      "vote_average.gte": voteAverageFrom,
+      with_genres: withGenres,
+      without_genres: withoutGenres,
+      with_original_language: originalLanguage,
+    },
+  });
 }
-export default discoverMovies;
+function getMovieDetail(movieId) {
+  return tmdbApi.get(`/movie/${movieId}`, {
+    params: {
+      api_key: apiKey,
+    }
+  });
+}
+export {discoverMovies,getMovieDetail} ;

@@ -1,11 +1,11 @@
 import React from "react";
-import { Tabs, Button, message} from "antd";
+import { Tabs, Button, message } from "antd";
 import MovieForm from "./Components/MovieForm/MovieForm";
 import MovieList from "./Components/MovieList/MovieList";
 import Navbar from "./Components/Navigation/Navbar";
 import getSimilarMovies from "./Components/SimilarMovies/SimilarMovies";
-import discoverMovie from "./Repository";
-import { SearchOutlined, VideoCameraAddOutlined  } from "@ant-design/icons";
+import { discoverMovies, getMovieDetail } from "./Repository";
+import { SearchOutlined, VideoCameraAddOutlined } from "@ant-design/icons";
 import "./App.css";
 
 const { TabPane } = Tabs;
@@ -17,17 +17,22 @@ class App extends React.Component {
       movies: [],
       rating: {},
       recommendations: [],
-      activeKey: "watched"
+      activeKey: "watched",
     };
   }
 
   addMovie = (movie) => {
     console.log(movie);
-    this.setState((prevState) => {
-      return {
-        movies: [...prevState.movies, movie],
-      };
-    },() =>{message.success("Your movie is added")});
+    this.setState(
+      (prevState) => {
+        return {
+          movies: [...prevState.movies, movie],
+        };
+      },
+      () => {
+        message.success("Your movie is added");
+      }
+    );
   };
 
   handleClick = (movieId) => {
@@ -42,7 +47,22 @@ class App extends React.Component {
     this.setState({ activeKey });
   };
 
+  updateRecommendations = (newRecommendations) => {
+    this.setState((prevState) => {
+      return {
+        recommendations: prevState.recommendations.concat(
+          newRecommendations
+        ),
+        activeKey: "recommendations",
+      };
+    });
+  }
+
   onSubmit = () => {
+    this.setState({ recommendations: [] }, this.getRecommendations);
+  }
+
+  getRecommendations = () => {
     const { movies, rating } = this.state;
     let liked = [];
     let likedId = [];
@@ -66,11 +86,26 @@ class App extends React.Component {
         likedId = likedId.concat(movie.id);
       }
     });
-    id = id.concat(likedId.forEach(getSimilarMovies));
-    // for (let i in likedId) {
-    //   id =  id.concat(getSimilarMovies(i));
-    // }
-    console.log(id);
+    
+    likedId.forEach((ids) => {
+      id = id.concat(getSimilarMovies(ids));
+    });
+    id = [...new Set(id)]
+
+    id.forEach((movieId) => {
+      getMovieDetail(movieId)
+      .then((response) => {
+        this.updateRecommendations([response.data]);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        console.log("Movies Fetched");
+      });
+    })
+    
+    
     const like = liked.join("|");
     const dislike = disliked.join(",");
     const languages = languageOfMovie.join("|");
@@ -78,7 +113,8 @@ class App extends React.Component {
     var releaseDateFrom = Math.min(...releaseDate);
     releaseDateFrom = releaseDateFrom + "";
     console.log(rating, movies, like, dislike);
-    discoverMovie(
+
+    discoverMovies(
       "popularity.desc",
       false,
       false,
@@ -88,12 +124,10 @@ class App extends React.Component {
       like,
       dislike,
       languages,
-      id
     )
       .then((response) => {
-        this.setState({ recommendations: response.data.results });
-        message.success("Your recommendations are ready!")
-        this.setState({ activeKey: "recommendations" });
+        this.updateRecommendations(response.data.results);
+        message.success("Your recommendations are ready!");
       })
       .catch((error) => {
         console.log(error);
@@ -101,6 +135,7 @@ class App extends React.Component {
       .finally(() => {
         console.log("Movies Fetched");
       });
+    
   };
 
   render() {
@@ -112,8 +147,10 @@ class App extends React.Component {
           <MovieForm addMovie={this.addMovie} />
         </div>
         <Tabs
-          onChange = {this.handleChange}
-          activeKey={this.state.activeKey} className="movie-tabs">
+          onChange={this.handleChange}
+          activeKey={this.state.activeKey}
+          className="movie-tabs"
+        >
           <TabPane tab="Watched" key="watched">
             <MovieList
               movies={movies}
@@ -122,15 +159,16 @@ class App extends React.Component {
               showOpinion={true}
               emptyDescription="No movies added!"
             />
-            <Button className="recommend-button"
-              style={{ position: 'fixed', bottom: 50, right: 40}}
+            <Button
+              className="recommend-button"
+              style={{ position: "fixed", bottom: 50, right: 40 }}
               type="primary"
               shape="round"
               icon={<SearchOutlined />}
               size="default"
               onClick={this.onSubmit}
             >
-                Recommend Movies!
+              Recommend Movies!
             </Button>
           </TabPane>
           <TabPane tab="Recommendations" key="recommendations">
@@ -140,17 +178,18 @@ class App extends React.Component {
               showOpinion={false}
               emptyDescription="Submit your favorite movies to get recommendations!"
             />
-            <Button className="recommend-button"
-              style={{ position: 'fixed', bottom: 50, right: 40}}
+            <Button
+              className="recommend-button"
+              style={{ position: "fixed", bottom: 50, right: 40 }}
               type="primary"
               shape="round"
               icon={<VideoCameraAddOutlined />}
               size="default"
               onClick={() => {
-                  this.setState({ activeKey: "watched" });
-                }}
+                this.setState({ activeKey: "watched" });
+              }}
             >
-                Add More Movies!
+              Add More Movies!
             </Button>
           </TabPane>
         </Tabs>
