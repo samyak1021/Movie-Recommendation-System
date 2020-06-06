@@ -3,7 +3,7 @@ import { Tabs, Button, message } from "antd";
 import MovieForm from "./Components/MovieForm/MovieForm";
 import MovieList from "./Components/MovieList/MovieList";
 import Navbar from "./Components/Navigation/Navbar";
-import getSimilarMovies from "./Components/SimilarMovies/SimilarMovies";
+import getSimilarMovies from "./SimilarMovies";
 import { discoverMovies, getMovieDetail } from "./Repository";
 import { SearchOutlined, VideoCameraAddOutlined } from "@ant-design/icons";
 import "./App.css";
@@ -45,13 +45,17 @@ class App extends React.Component {
   };
 
   handleChange = (activeKey) => {
-    this.setState({ activeKey });
+    this.setState({
+      activeKey,
+    });
   };
 
   updateTmdbRecommendations = (newRecommendations) => {
     this.setState((prevState) => {
       return {
-        tmdbRecommendations: prevState.tmdbRecommendations.concat(newRecommendations),
+        tmdbRecommendations: prevState.tmdbRecommendations.concat(
+          newRecommendations
+        ),
         activeKey: "recommendations",
       };
     });
@@ -60,54 +64,59 @@ class App extends React.Component {
   updateTfidfRecommendations = (newRecommendations) => {
     this.setState((prevState) => {
       return {
-        tfidfRecommendations: prevState.tfidfRecommendations.concat(newRecommendations),
+        tfidfRecommendations: prevState.tfidfRecommendations.concat(
+          newRecommendations
+        ),
         activeKey: "recommendations",
       };
     });
   };
 
   onSubmit = () => {
-    this.setState({ tmdbRecommendations: [], tfidfRecommendations:[] }, this.getRecommendations);
+    this.setState(
+      {
+        tmdbRecommendations: [],
+        tfidfRecommendations: [],
+      },
+      this.getRecommendations
+    );
   };
 
   getTmdbMovies = () => {
     const { movies, rating } = this.state;
     let liked = [];
-    let likedId = [];
     let disliked = [];
-    let dislikedId = [];
-    let releaseDate = [];
-    let languageOfMovie = [];
-    let voteAverage = [];
-    
+
+    const releaseDate = movies.map((movie) =>
+      movie.release_date.slice(0).slice(0, 4)
+    );
+    const languageOfMovie = movies.map((movie) => movie.original_language);
+    const voteAverage = movies.map((movie) => movie.vote_average);
+
     movies.forEach((movie) => {
-      
-      releaseDate = releaseDate.concat(movie.release_date.slice(0).slice(0, 4));
-      languageOfMovie = languageOfMovie.concat(movie.original_language);
-      voteAverage = voteAverage.concat(movie.vote_average);
       if (rating[movie.id] === false || rating[movie.id] === undefined) {
         disliked = disliked.concat(movie.genre_ids);
-        dislikedId = dislikedId.concat(movie.id);
       } else {
         liked = liked.concat(movie.genre_ids);
-        likedId = likedId.concat(movie.id);
       }
     });
+
+    disliked = [...new Set(disliked)];
+    liked = [...new Set(liked)];
 
     const like = liked.join("|");
     const dislike = disliked.join(",");
     const languages = languageOfMovie.join("|");
     const ratings = Math.min(...voteAverage);
-    var releaseDateFrom = Math.min(...releaseDate);
-    releaseDateFrom = releaseDateFrom + "";
-    console.log(rating, movies, like, dislike);
+    let releaseDateFrom = Math.min(...releaseDate);
+    releaseDateFrom = releaseDateFrom + "-01-01";
 
     discoverMovies(
       "popularity.desc",
       false,
       false,
       1,
-      releaseDateFrom + "-01-01",
+      releaseDateFrom,
       ratings,
       like,
       dislike,
@@ -123,13 +132,24 @@ class App extends React.Component {
       .finally(() => {
         console.log("Movies Fetched");
       });
-  }
+  };
 
-  getTfidfMovies = (likedIds) =>{
-    
+  getTfidfMovies = () => {
+    const { movies, rating } = this.state;
+
+    const dislikedId = [];
+    const likedId = [];
+
+    movies.forEach((movie) => {
+      if (rating[movie.id] === false || rating[movie.id] === undefined) {
+        dislikedId.push(movie.id);
+      } else {
+        likedId.push(movie.id);
+      }
+    });
+
     let id = [];
-
-    likedIds.forEach((ids) => {
+    likedId.forEach((ids) => {
       id = id.concat(getSimilarMovies(ids));
     });
     id = [...new Set(id)];
@@ -146,13 +166,12 @@ class App extends React.Component {
           console.log("Movies Fetched");
         });
     });
-
-  }
+  };
 
   getRecommendations = () => {
     this.getTmdbMovies();
-    this.getTfidfMovies(this.likedId);
-  }
+    this.getTfidfMovies();
+  };
   //   const { movies, rating } = this.state;
   //   let liked = [];
   //   let likedId = [];
@@ -225,7 +244,12 @@ class App extends React.Component {
   // };
 
   render() {
-    const { movies, rating, tmdbRecommendations, tfidfRecommendations } = this.state;
+    const {
+      movies,
+      rating,
+      tmdbRecommendations,
+      tfidfRecommendations,
+    } = this.state;
     return (
       <div className="app">
         <Navbar />

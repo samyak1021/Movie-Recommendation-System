@@ -31,11 +31,13 @@ function discoverMovies(
     },
   });
 }
+
 function getMovieDetail(movieId) {
   return tmdbApi.get(`/movie/${movieId}`, {
     params: {
       api_key: apiKey,
-    }
+    },
   });
 }
-export {discoverMovies,getMovieDetail} ;
+
+export { discoverMovies, getMovieDetail };
