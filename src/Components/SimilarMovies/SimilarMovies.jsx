@@ -1,5 +1,5 @@
-import MovieIndex from "../Data/movie_index.json";
-import Similar from "../Data/similar_movie.json";
+import MovieIndex from "../Data/movieIndex.json";
+import Similar from "../Data/similarMovies.json";
 
 function getSimilarMovies(movieId) {
   let index;
