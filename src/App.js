@@ -1,10 +1,11 @@
 import React from "react";
-import { Tabs, Button, message} from "antd";
+import { Tabs, Button, message } from "antd";
 import MovieForm from "./Components/MovieForm/MovieForm";
 import MovieList from "./Components/MovieList/MovieList";
 import Navbar from "./Components/Navigation/Navbar";
-import discoverMovie from "./Repository";
-import { SearchOutlined, VideoCameraAddOutlined  } from "@ant-design/icons";
+import getSimilarMovies from "./SimilarMovies";
+import { discoverMovies, getMovieDetail } from "./Repository";
+import { SearchOutlined, VideoCameraAddOutlined } from "@ant-design/icons";
 import "./App.css";
 
 const { TabPane } = Tabs;
@@ -15,18 +16,24 @@ class App extends React.Component {
     this.state = {
       movies: [],
       rating: {},
-      recommendations: [],
-      activeKey: "watched"
+      tmdbRecommendations: [],
+      tfidfRecommendations: [],
+      activeKey: "watched",
     };
   }
 
   addMovie = (movie) => {
     console.log(movie);
-    this.setState((prevState) => {
-      return {
-        movies: [...prevState.movies, movie],
-      };
-    },() =>{message.success("Your movie is added")});
+    this.setState(
+      (prevState) => {
+        return {
+          movies: [...prevState.movies, movie],
+        };
+      },
+      () => {
+        message.success("Your movie is added");
+      }
+    );
   };
 
   handleClick = (movieId) => {
@@ -38,50 +45,86 @@ class App extends React.Component {
   };
 
   handleChange = (activeKey) => {
-    this.setState({ activeKey });
+    this.setState({
+      activeKey,
+    });
+  };
+
+  updateTmdbRecommendations = (newRecommendations) => {
+    this.setState((prevState) => {
+      return {
+        tmdbRecommendations: prevState.tmdbRecommendations.concat(
+          newRecommendations
+        ),
+        activeKey: "recommendations",
+      };
+    });
+  };
+
+  updateTfidfRecommendations = (newRecommendations) => {
+    this.setState((prevState) => {
+      return {
+        tfidfRecommendations: prevState.tfidfRecommendations.concat(
+          newRecommendations
+        ),
+        activeKey: "recommendations",
+      };
+    });
   };
 
   onSubmit = () => {
+    this.setState(
+      {
+        tmdbRecommendations: [],
+        tfidfRecommendations: [],
+      },
+      this.getRecommendations
+    );
+  };
+
+  getTmdbMovies = () => {
     const { movies, rating } = this.state;
     let liked = [];
     let disliked = [];
-    let releaseDate = [];
-    let languageOfMovie = [];
-    let voteAverage = [];
-    let runTime = [];
+
+    const releaseDate = movies.map((movie) =>
+      movie.release_date.slice(0).slice(0, 4)
+    );
+    const languageOfMovie = movies.map((movie) => movie.original_language);
+    const voteAverage = movies.map((movie) => movie.vote_average);
+
     movies.forEach((movie) => {
-      releaseDate = releaseDate.concat(movie.release_date.slice(0).slice(0, 4));
-      languageOfMovie = languageOfMovie.concat(movie.original_language);
-      voteAverage = voteAverage.concat(movie.vote_average);
-      runTime = runTime.concat(movie.with_runtime);
       if (rating[movie.id] === false || rating[movie.id] === undefined) {
         disliked = disliked.concat(movie.genre_ids);
       } else {
         liked = liked.concat(movie.genre_ids);
       }
     });
+
+    disliked = [...new Set(disliked)];
+    liked = [...new Set(liked)];
+
     const like = liked.join("|");
     const dislike = disliked.join(",");
     const languages = languageOfMovie.join("|");
     const ratings = Math.min(...voteAverage);
-    var releaseDateFrom = Math.min(...releaseDate);
-    releaseDateFrom = releaseDateFrom + "";
-    console.log(rating, movies, like, dislike);
-    discoverMovie(
+    let releaseDateFrom = Math.min(...releaseDate);
+    releaseDateFrom = releaseDateFrom + "-01-01";
+
+    discoverMovies(
       "popularity.desc",
       false,
       false,
       1,
-      releaseDateFrom + "-01-01",
+      releaseDateFrom,
       ratings,
       like,
       dislike,
       languages
     )
       .then((response) => {
-        this.setState({ recommendations: response.data.results });
-        message.success("Your recommendations are ready!")
-        this.setState({ activeKey: "recommendations" });
+        this.updateTmdbRecommendations(response.data.results);
+        message.success("Your recommendations are ready!");
       })
       .catch((error) => {
         console.log(error);
@@ -91,17 +134,88 @@ class App extends React.Component {
       });
   };
 
+  getTfidfMovies = () => {
+    const { movies, rating } = this.state;
+
+    const dislikedId = [];
+    const likedId = [];
+
+    movies.forEach((movie) => {
+      if (rating[movie.id] === false || rating[movie.id] === undefined) {
+        dislikedId.push(movie.id);
+      } else {
+        likedId.push(movie.id);
+      }
+    });
+
+    let id = [];
+    likedId.forEach((ids) => {
+      id = id.concat(getSimilarMovies(ids));
+    });
+    id = [...new Set(id)];
+
+    id.forEach((movieId) => {
+      getMovieDetail(movieId)
+        .then((response) => {
+          this.updateTfidfRecommendations([response.data]);
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        .finally(() => {
+          console.log("Movies Fetched");
+        });
+    });
+  };
+
+  getRecommendations = () => {
+    this.getTmdbMovies();
+    this.getTfidfMovies();
+  };
+
   render() {
-    const { movies, rating, recommendations } = this.state;
+    const {
+      movies,
+      rating,
+      activeKey,
+      tmdbRecommendations,
+      tfidfRecommendations,
+    } = this.state;
+
     return (
       <div className="app">
         <Navbar />
         <div className="search-box">
           <MovieForm addMovie={this.addMovie} />
         </div>
+
+        <Button
+          className="recommend-button"
+          type="primary"
+          shape="round"
+          icon={
+            activeKey === "watched" ? (
+              <SearchOutlined />
+            ) : (
+              <VideoCameraAddOutlined />
+            )
+          }
+          size="default"
+          onClick={
+            activeKey === "watched"
+              ? this.onSubmit
+              : () => {
+                  this.setState({ activeKey: "watched" });
+                }
+          }
+        >
+          {activeKey === "watched" ? "Recommend Movies!" : "Add More Movies!"}
+        </Button>
         <Tabs
-          onChange = {this.handleChange}
-          activeKey={this.state.activeKey} className="movie-tabs">
+          onChange={this.handleChange}
+          activeKey={activeKey}
+          className="movie-tabs"
+        >
           <TabPane tab="Watched" key="watched">
             <MovieList
               movies={movies}
@@ -110,36 +224,26 @@ class App extends React.Component {
               showOpinion={true}
               emptyDescription="No movies added!"
             />
-            <Button className="recommend-button"
-              style={{ position: 'fixed', bottom: 50, right: 40}}
-              type="primary"
-              shape="round"
-              icon={<SearchOutlined />}
-              size="default"
-              onClick={this.onSubmit}
-            >
-                Recommend Movies!
-            </Button>
           </TabPane>
           <TabPane tab="Recommendations" key="recommendations">
-            <MovieList
-              movies={recommendations}
-              onClick={() => {}}
-              showOpinion={false}
-              emptyDescription="Submit your favorite movies to get recommendations!"
-            />
-            <Button className="recommend-button"
-              style={{ position: 'fixed', bottom: 50, right: 40}}
-              type="primary"
-              shape="round"
-              icon={<VideoCameraAddOutlined />}
-              size="default"
-              onClick={() => {
-                  this.setState({ activeKey: "watched" });
-                }}
-            >
-                Add More Movies!
-            </Button>
+            <Tabs>
+              <TabPane tab="TMDB Recommendations" key="tmdb">
+                <MovieList
+                  movies={tmdbRecommendations}
+                  onClick={() => {}}
+                  showOpinion={false}
+                  emptyDescription="Submit your favorite movies to get recommendations!"
+                />
+              </TabPane>
+              <TabPane tab="Our Recommendations" key="tfidf">
+                <MovieList
+                  movies={tfidfRecommendations}
+                  onClick={() => {}}
+                  showOpinion={false}
+                  emptyDescription="Submit your favorite movies to get recommendations!"
+                />
+              </TabPane>
+            </Tabs>
           </TabPane>
         </Tabs>
       </div>
