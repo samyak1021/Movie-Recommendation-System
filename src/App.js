@@ -177,18 +177,43 @@ class App extends React.Component {
     const {
       movies,
       rating,
+      activeKey,
       tmdbRecommendations,
       tfidfRecommendations,
     } = this.state;
+
     return (
       <div className="app">
         <Navbar />
         <div className="search-box">
           <MovieForm addMovie={this.addMovie} />
         </div>
+
+        <Button
+          className="recommend-button"
+          type="primary"
+          shape="round"
+          icon={
+            activeKey === "watched" ? (
+              <SearchOutlined />
+            ) : (
+              <VideoCameraAddOutlined />
+            )
+          }
+          size="default"
+          onClick={
+            activeKey === "watched"
+              ? this.onSubmit
+              : () => {
+                  this.setState({ activeKey: "watched" });
+                }
+          }
+        >
+          {activeKey === "watched" ? "Recommend Movies!" : "Add More Movies!"}
+        </Button>
         <Tabs
           onChange={this.handleChange}
-          activeKey={this.state.activeKey}
+          activeKey={activeKey}
           className="movie-tabs"
         >
           <TabPane tab="Watched" key="watched">
@@ -199,17 +224,6 @@ class App extends React.Component {
               showOpinion={true}
               emptyDescription="No movies added!"
             />
-            <Button
-              className="recommend-button"
-              style={{ position: "fixed", bottom: 50, right: 40 }}
-              type="primary"
-              shape="round"
-              icon={<SearchOutlined />}
-              size="default"
-              onClick={this.onSubmit}
-            >
-              Recommend Movies!
-            </Button>
           </TabPane>
           <TabPane tab="Recommendations" key="recommendations">
             <Tabs>
@@ -220,19 +234,6 @@ class App extends React.Component {
                   showOpinion={false}
                   emptyDescription="Submit your favorite movies to get recommendations!"
                 />
-                <Button
-                  className="recommend-button"
-                  style={{ position: "fixed", bottom: 50, right: 40 }}
-                  type="primary"
-                  shape="round"
-                  icon={<VideoCameraAddOutlined />}
-                  size="default"
-                  onClick={() => {
-                    this.setState({ activeKey: "watched" });
-                  }}
-                >
-                  Add More Movies!
-                </Button>
               </TabPane>
               <TabPane tab="Our Recommendations" key="2">
                 <MovieList
@@ -241,19 +242,6 @@ class App extends React.Component {
                   showOpinion={false}
                   emptyDescription="Submit your favorite movies to get recommendations!"
                 />
-                <Button
-                  className="recommend-button"
-                  style={{ position: "fixed", bottom: 50, right: 40 }}
-                  type="primary"
-                  shape="round"
-                  icon={<VideoCameraAddOutlined />}
-                  size="default"
-                  onClick={() => {
-                    this.setState({ activeKey: "watched" });
-                  }}
-                >
-                  Add More Movies!
-                </Button>
               </TabPane>
             </Tabs>
           </TabPane>
