@@ -213,7 +213,7 @@ class App extends React.Component {
           </TabPane>
           <TabPane tab="Recommendations" key="recommendations">
             <Tabs>
-              <TabPane tab="TMDB Recommendations" key="1">
+              <TabPane tab="TMDB Recommendations" key="tmdb">
                 <MovieList
                   movies={tmdbRecommendations}
                   onClick={() => {}}
@@ -234,7 +234,7 @@ class App extends React.Component {
                   Add More Movies!
                 </Button>
               </TabPane>
-              <TabPane tab="Our Recommendations" key="2">
+              <TabPane tab="Our Recommendations" key="tfidf">
                 <MovieList
                   movies={tfidfRecommendations}
                   onClick={() => {}}
