@@ -40,4 +40,13 @@ function getMovieDetail(movieId) {
   });
 }
 
-export { discoverMovies, getMovieDetail };
+function getTmdbRecommendation(movieId, page) {
+  return tmdbApi.get(`/movie/${movieId}/recommendations`, {
+    params: {
+      api_key: apiKey,
+      page: page,
+    },
+  });
+}
+
+export { discoverMovies, getMovieDetail, getTmdbRecommendation };
