@@ -4,7 +4,11 @@ import MovieForm from "./Components/MovieForm/MovieForm";
 import MovieList from "./Components/MovieList/MovieList";
 import Navbar from "./Components/Navigation/Navbar";
 import getSimilarMovies from "./SimilarMovies";
-import { discoverMovies, getMovieDetail } from "./Repository";
+import {
+  discoverMovies,
+  getMovieDetail,
+  getTmdbRecommendation,
+} from "./Repository";
 import { SearchOutlined, VideoCameraAddOutlined } from "@ant-design/icons";
 import "./App.css";
 
@@ -18,6 +22,7 @@ class App extends React.Component {
       rating: {},
       tmdbRecommendations: [],
       tfidfRecommendations: [],
+      adhocRecommendations: [],
       activeKey: "watched",
     };
   }
@@ -50,10 +55,10 @@ class App extends React.Component {
     });
   };
 
-  updateTmdbRecommendations = (newRecommendations) => {
+  updateAdhocRecommendations = (newRecommendations) => {
     this.setState((prevState) => {
       return {
-        tmdbRecommendations: prevState.tmdbRecommendations.concat(
+        adhocRecommendations: prevState.adhocRecommendations.concat(
           newRecommendations
         ),
         activeKey: "recommendations",
@@ -72,17 +77,29 @@ class App extends React.Component {
     });
   };
 
+  updateTmdbRecommendations = (newRecommendations) => {
+    this.setState((prevState) => {
+      return {
+        tmdbRecommendations: prevState.tmdbRecommendations.concat(
+          newRecommendations
+        ),
+        activeKey: "recommendations",
+      };
+    });
+  };
+
   onSubmit = () => {
     this.setState(
       {
-        tmdbRecommendations: [],
+        adhocRecommendations: [],
         tfidfRecommendations: [],
+        tmdbRecommendations: [],
       },
       this.getRecommendations
     );
   };
 
-  getTmdbMovies = () => {
+  getAdhocMovies = () => {
     const { movies, rating } = this.state;
     let liked = [];
     let disliked = [];
@@ -123,7 +140,7 @@ class App extends React.Component {
       languages
     )
       .then((response) => {
-        this.updateTmdbRecommendations(response.data.results);
+        this.updateAdhocRecommendations(response.data.results);
         message.success("Your recommendations are ready!");
       })
       .catch((error) => {
@@ -168,9 +185,38 @@ class App extends React.Component {
     });
   };
 
+  getTmdbMovies = () => {
+    const { movies, rating } = this.state;
+
+    const dislikedId = [];
+    let likedId = [];
+
+    movies.forEach((movie) => {
+      if (rating[movie.id] === false || rating[movie.id] === undefined) {
+        dislikedId.push(movie.id);
+      } else {
+        likedId.push(movie.id);
+      }
+    });
+
+    likedId.forEach((movieId) => {
+      getTmdbRecommendation(movieId, 1)
+        .then((response) => {
+          this.updateTmdbRecommendations(response.data.results);
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        .finally(() => {
+          console.log("Movies Fetched");
+        });
+    });
+  };
+
   getRecommendations = () => {
-    this.getTmdbMovies();
+    this.getAdhocMovies();
     this.getTfidfMovies();
+    this.getTmdbMovies();
   };
 
   render() {
@@ -178,8 +224,9 @@ class App extends React.Component {
       movies,
       rating,
       activeKey,
-      tmdbRecommendations,
+      adhocRecommendations,
       tfidfRecommendations,
+      tmdbRecommendations,
     } = this.state;
 
     return (
@@ -227,9 +274,9 @@ class App extends React.Component {
           </TabPane>
           <TabPane tab="Recommendations" key="recommendations">
             <Tabs>
-              <TabPane tab="TMDB Recommendations" key="tmdb">
+              <TabPane tab="AD-HOC Recommendations" key="adhoc">
                 <MovieList
-                  movies={tmdbRecommendations}
+                  movies={adhocRecommendations}
                   onClick={() => {}}
                   showOpinion={false}
                   emptyDescription="Submit your favorite movies to get recommendations!"
@@ -238,6 +285,14 @@ class App extends React.Component {
               <TabPane tab="Our Recommendations" key="tfidf">
                 <MovieList
                   movies={tfidfRecommendations}
+                  onClick={() => {}}
+                  showOpinion={false}
+                  emptyDescription="Submit your favorite movies to get recommendations!"
+                />
+              </TabPane>
+              <TabPane tab="TMDB Recommendations" key="tmdb">
+                <MovieList
+                  movies={tmdbRecommendations}
                   onClick={() => {}}
                   showOpinion={false}
                   emptyDescription="Submit your favorite movies to get recommendations!"
