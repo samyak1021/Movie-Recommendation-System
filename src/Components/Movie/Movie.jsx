@@ -2,6 +2,7 @@ import React from "react";
 import { Card } from "antd";
 import "./Movie.css";
 import Opinion from "../Opinion/Opinion";
+import DeleteMovie from "../DeleteMovie/DeleteMovie";
 
 const { Meta } = Card;
 
@@ -16,10 +17,15 @@ function Movie(props) {
     showOpinion,
   } = props;
 
-  const actions = [];
+  const action = [];
+  const extra = []
   if (showOpinion) {
-    actions.push(
+    action.push(
       <Opinion onClick={props.onClick} rating={rating} movieId={movieId} />
+    );
+
+    extra.push(
+      <DeleteMovie onDelete={props.onDelete} movieInfo={props.movieInfo} />
     );
   }
 
@@ -33,7 +39,8 @@ function Movie(props) {
           src={`https://image.tmdb.org/t/p/w200${poster_path}`}
         />
       }
-      actions={actions}
+      actions={action}
+      extra = {extra}
     >
       <Meta title={`${title} (${vote_average})`} />
     </Card>
