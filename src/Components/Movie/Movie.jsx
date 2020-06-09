@@ -1,5 +1,5 @@
 import React from "react";
-import { Card } from "antd";
+import { Card,Popover } from "antd";
 import "./Movie.css";
 import Opinion from "../Opinion/Opinion";
 import DeleteMovie from "../DeleteMovie/DeleteMovie";
@@ -28,22 +28,29 @@ function Movie(props) {
       <DeleteMovie onDelete={props.onDelete} movieInfo={props.movieInfo} />
     );
   }
+  const content = (
+    <div>
+      Rating :{vote_average}
+    </div>
+  )
 
   return (
-    <Card
-      hoverable
-      style={{ width: 240 }}
-      cover={
-        <img
-          alt={title}
-          src={`https://image.tmdb.org/t/p/w200${poster_path}`}
-        />
-      }
-      actions={action}
-      extra = {extra}
-    >
+    <Popover content={content} title={title}>
+      <Card
+        hoverable
+        style={{ width: 240 }}
+        cover={
+          <img
+            alt={title}
+            src={`https://image.tmdb.org/t/p/w200${poster_path}`}
+          />
+        }
+        actions={action}
+        extra = {extra}
+      >
       <Meta title={`${title} (${vote_average})`} />
-    </Card>
+      </Card>
+    </Popover>
   );
 }
 
