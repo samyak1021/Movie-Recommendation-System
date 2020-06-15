@@ -44,7 +44,6 @@ class App extends React.Component {
   deleteMovie = (movie) => {
     const { movies } = this.state;
     const index = movies.indexOf(movie)
-    console.log(index)
     if (index > -1) {
       movies.splice(index, 1);
     }
