@@ -36,9 +36,8 @@ function Movie(props) {
 
   return (
     <Popover content={content} title={title}>
-      <Card
+      <Card className = "movie-card"
         hoverable
-        style={{ width: 240 }}
         cover={
           <img
             alt={title}
