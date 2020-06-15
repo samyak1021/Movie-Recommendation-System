@@ -41,18 +41,19 @@ class App extends React.Component {
     );
   };
 
-  deleteMovie = (movie) => {
+  deleteMovie = (movieId) => {
     const { movies } = this.state;
-    const index = movies.indexOf(movie)
-    console.log(index)
+    let moviesAfterDelete = movies.concat();
+    let result = moviesAfterDelete.filter(movie => movie.id === movieId)
+    const index = moviesAfterDelete.indexOf(result[0])
     if (index > -1) {
-      movies.splice(index, 1);
+      moviesAfterDelete.splice(index, 1);
     }
     
     this.setState(
       (prevState) => {
         return {
-          movies: [...prevState.movies],
+          movies: [...moviesAfterDelete],
         };
       },
       () => {

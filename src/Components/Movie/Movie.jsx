@@ -17,15 +17,15 @@ function Movie(props) {
     showOpinion,
   } = props;
 
-  const action = [];
+  const actions = [];
   const extra = []
   if (showOpinion) {
-    action.push(
+    actions.push(
       <Opinion onClick={props.onClick} rating={rating} movieId={movieId} />
     );
 
     extra.push(
-      <DeleteMovie onDelete={props.onDelete} movieInfo={props.movieInfo} />
+      <DeleteMovie onDelete={props.onDelete} movieId={movieId} />
     );
   }
   const content = (
@@ -44,7 +44,7 @@ function Movie(props) {
             src={`https://image.tmdb.org/t/p/w200${poster_path}`}
           />
         }
-        actions={action}
+        actions={actions}
         extra = {extra}
       >
       <Meta title={`${title} (${vote_average})`} />

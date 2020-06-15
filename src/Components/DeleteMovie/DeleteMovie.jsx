@@ -4,11 +4,11 @@ import { Button} from 'antd';
 import {CloseOutlined} from '@ant-design/icons';
 
 function DeleteMovie(props) {
-  const { onDelete, movieInfo } = props;
+  const { onDelete, movieId } = props;
 
   return (
     <div className="delete-button">
-      <Button className="btn btn-primary2" type="primary" shape="circle"  size= "small" onClick={() => onDelete(movieInfo)}>
+      <Button className="btn btn-primary2" type="primary" shape="circle"  size= "small" onClick={() => onDelete(movieId)}>
         <CloseOutlined/>
       </Button>
     </div>
