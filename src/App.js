@@ -41,6 +41,27 @@ class App extends React.Component {
     );
   };
 
+  deleteMovie = (movieId) => {
+    const { movies } = this.state;
+    let moviesAfterDelete = movies.concat();
+    let result = moviesAfterDelete.filter(movie => movie.id === movieId)
+    const index = moviesAfterDelete.indexOf(result[0])
+    if (index > -1) {
+      moviesAfterDelete.splice(index, 1);
+    }
+    
+    this.setState(
+      (prevState) => {
+        return {
+          movies: [...moviesAfterDelete],
+        };
+      },
+      () => {
+        message.success("Your movie is removed");
+      }
+    );
+  };
+
   handleClick = (movieId) => {
     const { rating } = this.state; //rating = {}
     rating[movieId] = !rating[movieId];
@@ -267,6 +288,7 @@ class App extends React.Component {
             <MovieList
               movies={movies}
               onClick={this.handleClick}
+              onDelete ={this.deleteMovie}
               rating={rating}
               showOpinion={true}
               emptyDescription="No movies added!"
