@@ -4,7 +4,7 @@ import Movie from "../Movie/Movie";
 import "./MovieList.css";
 
 function MovieList(props) {
-  const { movies, rating, onClick, showOpinion, emptyDescription } = props;
+  const { movies, rating, onClick, onDelete, showOpinion, emptyDescription } = props;
 
   return (
     <div className="movie-list">
@@ -17,6 +17,8 @@ function MovieList(props) {
                 {...movieInfo}
                 movieId={movieInfo.id}
                 onClick={onClick}
+                onDelete={onDelete}
+                movieInfo ={movieInfo}
                 rating={rating ? rating[movieInfo.id] : null}
                 showOpinion={showOpinion}
               />
